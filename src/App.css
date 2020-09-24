@@ -1,38 +1,76 @@
-.App {
+body{
+  background-color: #353535;
+  color: rgba(255, 255, 255, .9);
+  line-height: 1.666666667em;
+}
+table.banggia{
+  background-color: rgba(30,30,30,.85);
+  box-shadow: 0 4px 10px rgba(0,0,0,.4);
+  width: 100%;
+  font-size: 20px;
+  font-family: helvetica,arial,sans-serif;
+  /* Việc bố trí theo chiều ngang chỉ phụ thuộc vào chiều rộng của table và chiều rộng của cột, không phụ thuộc vào nội dung của phần tử. */
+  /* table-layout: fixed; */
+  /* Khoảng trống giữa các đường viền (border) của table bị loại bỏ, chỉ còn đường viền duy nhất. */
+  border-collapse: collapse;
+  line-height: 1.666666667em;
+  color: #d8d8d8;
+}
+table.banggia > thead{
+  box-shadow: 0 0px 40px black;
+}
+table.banggia > tbody{
+  box-shadow: 0 0 15px rgb(17, 17, 17);
+}
+table.banggia thead tr th{
+  border: 1px solid black;
+}
+table.banggia thead tr:nth-child(2n+1){
+  background-color: #1E1E1E;
+}
+table.banggia thead tr:nth-child(2n+2){
+  background-color: #222222;
+}
+
+table.banggia tbody tr td{
+  border: 1px solid black;
+  border-width: 1px 1px;
+  font-size: 18px;
+  text-align: right;
+  padding-right: 5px;
+}
+
+table.banggia tbody tr:nth-child(2n+1){
+  background-color: #181818;
+}
+
+table.banggia tbody tr td:nth-child(1){
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+table.banggia tbody tr td:nth-child(2){
+  color: #ffd900;
+  text-align: center;
+}
+table.banggia tbody tr td:nth-child(3){
+  text-align: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+table.banggia tbody tr:nth-child(2n+1) td.khoplenh {
+  background-color: #404040;
+}
+table.banggia tbody tr:nth-child(2n+2) td.khoplenh {
+  background-color: #282828;
+}
+table.banggia thead tr th.khoplenh {
+  background-color: rgba(40,40,40,.8);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.logoNchart{
+  display: grid;
+  grid-template-columns: 70% 30%;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.item2{
+  margin-left: 30%;
 }

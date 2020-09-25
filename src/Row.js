@@ -14,15 +14,13 @@ export default class Row extends React.Component{
         if(nextProps.value.matchedCommands.price!==currentState.kl_gia){
             return{
                 kl_gia: nextProps.value.matchedCommands.price,
-                // kl_pt: Math.round( currentState.kl_gia/nextProps.value.matchedCommands.price * 100 + Number.EPSILON ) / 100
-                kl_pt: Math.ceil(currentState.kl_gia/nextProps.value.matchedCommands.price)
+                kl_pt: Math.round( currentState.kl_gia/nextProps.value.matchedCommands.price * 100 + Number.EPSILON ) / 100
+                // kl_pt: Math.ceil(currentState.kl_gia/nextProps.value.matchedCommands.price)
             }
         }
         else return null;
     }
     render(){
-        // let valueOfOneRow = Object.keys(this.props.value).map(key=>this.props.value[key]);
-        // console.log(valueOfOneRow);
         let maCP = this.props.value.stockCode;
         let giaTC = this.props.value.referencePrice;
         let tongKhoiLuong = this.props.value.totalVolume;

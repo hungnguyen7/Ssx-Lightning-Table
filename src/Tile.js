@@ -148,6 +148,7 @@ export class KhoiLuong extends React.Component{
                 tileStyle: redStyle
             }
         }
+        // Xu li truong hop gia thay doi nhung khoi luong giu nguyen
         else if(nextProps.kl === currentState.kl&&nextProps.gia!==currentState.gia){
             return{
                 giaTC: nextProps.giaTC,
@@ -227,8 +228,4 @@ export class KhopLenh extends React.Component{
         )
     }
 }
-
-
-
-
 

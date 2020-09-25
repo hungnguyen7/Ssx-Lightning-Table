@@ -1,17 +1,21 @@
 import React from 'react';
 import './App.css';
+import icon from './icon.png';
 import Row from './Row';
 import io from 'socket.io-client';
 import axios from 'axios';
 import HighchartsReact from "highcharts-react-official";
 
 let dateTime = new Date();
-// let min = new Date(dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate(), 15, 00).getTime();
-// let max = new Date(dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate(), 21, 0).getTime();
+// let min = new Date(2020, 8, 20, 22, 27).getTime();
+// let max = new Date(2020, 8, 20, 22, 0).getTime();
+let min = new Date(dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate(), 15, 0).getTime();
+let max = new Date(dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate(), 16, 0).getTime();
 class App extends React.Component{
   constructor(props){
     super(props);
     this.state={
+      accessToken: '',
       apiStockResult:[],
       chartOptions:{
         title:{
@@ -21,6 +25,7 @@ class App extends React.Component{
           enabled: false
         },
         chart: {
+          // borderWidth: 1,
           backgroundColor: '#353535',
           type: 'line',
           width: 800,
@@ -34,23 +39,26 @@ class App extends React.Component{
           }
       },
         xAxis: {
+          gridLineWidth: 0.4,
+          tickInterval: 1000*60*5,
           labels: {
             style: {
                 color: 'white'
             }
         },
           type: 'datetime',
-          // min: min,
-          // max: max
+          min: min,
+          max: max
         },
         yAxis:{
           title:{
             text: null
-          }
+          },
+          gridLineWidth: 0
         },
-        // time: {
-        //   useUTC: false
-        // },
+        time: {
+          useUTC: false
+        },
         series: [{
           showInLegend: false,
           data: []
@@ -59,31 +67,36 @@ class App extends React.Component{
     }
     this.socket = null;
   }
-  componentDidMount(){
-    this.socket = io('http://45.119.213.117:5000');
-    axios.post('http://45.119.213.117:5000/api/v1/users/login', {
+  async componentDidMount(){
+    //Get access token
+    let accessToken = await axios.post('http://45.119.213.117:5000/api/v1/users/login', {
       username: 'admin02',
       password: '123456'
     }).then((res)=>{
-      // console.log(res)
+      return res.data.accessToken.value
     }).catch((err)=>{
       console.log(err)
+    });
+    this.setState({
+      accessToken
     })
+
+    this.socket = io('http://45.119.213.117:5000');
     this.socket.on('connect', res => {
       console.log("Socket connected");
       this.socket.emit('authenticate', {
-        token: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDM1NDA3NjE4NDksInBheWxvYWQiOnsiaWQiOiI1ZjZjODkzNjk5MmQxNTAwMzIzZGZmY2IiLCJleHBpcmVkVGltZSI6MTYwMzU0MDc2MTg0OX0sImlhdCI6MTYwMDk0ODc2MX0.9uDpoDfuF4_JHRgsmho8mkfnI_ekusvl8ihhhqWAUPY'
+        token: `Bearer ${this.state.accessToken}`
       })
     })
     this.socket.on('derivative', res => {
-      console.log(res.items)
+      // console.log(res.items)
       // console.log("Getting stock data...");
       this.setState({
         apiStockResult: res.items
       })
     })
     this.socket.on('derivativeChart', res=>{
-      // console.log(res)
+      console.log(res)
       // console.log('Getting chart data...');
       let dataSeries=res.data.map((value)=>{
         return Object.keys(value).map((key)=>{
@@ -105,9 +118,8 @@ class App extends React.Component{
           }],
           yAxis:{
             plotLines:[{
-              dashStyle: 'shortdash',
               color: 'orange',
-              width: 2,
+              width: 3,
               value: plotLine
             }]
           }
@@ -116,14 +128,13 @@ class App extends React.Component{
     })
   }
   render(){
-    // console.log(this.state.chartOptions)
     return(
       <div id="main">
         <div className='logoNchart'>
           <div className='item1'>
             <HighchartsReact options={this.state.chartOptions}/>
           </div>
-          <img className='item2' src='/icon.png' alt='ICON' width='70%' height='70%'/>
+          <img className='item2' src={icon} alt='ICON' height='100%'/>
         </div>
         <div className="container" id="table">
           <table className='banggia'>

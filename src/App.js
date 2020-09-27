@@ -6,15 +6,14 @@ import io from 'socket.io-client';
 import axios from 'axios';
 import HighchartsReact from "highcharts-react-official";
 
-let dateTime = new Date();
-// let min = new Date(2020, 8, 20, 22, 27).getTime();
-// let max = new Date(2020, 8, 20, 22, 0).getTime();
-let min = new Date(dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate(), 15, 0).getTime();
-let max = new Date(dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate(), 16, 0).getTime();
+// let dateTime = new Date();
+let min = new Date(2020, 27, 8, 13, 50).getTime();
+let max = new Date(2020, 27, 8, 15, 0).getTime();
 class App extends React.Component{
   constructor(props){
     super(props);
     this.state={
+      index:null,
       accessToken: '',
       apiStockResult:[],
       chartOptions:{
@@ -35,11 +34,13 @@ class App extends React.Component{
           series: {
               marker: {
                   enabled: false
-              }
+              },
+              lineWidth: 1.5
           }
       },
         xAxis: {
-          gridLineWidth: 0.4,
+          gridLineDashStyle: 'dot',
+          gridLineWidth: 0.2,
           tickInterval: 1000*60*5,
           labels: {
             style: {
@@ -54,7 +55,8 @@ class App extends React.Component{
           title:{
             text: null
           },
-          gridLineWidth: 0
+          gridLineDashStyle: 'dot',
+          gridLineWidth: 0.2
         },
         time: {
           useUTC: false
@@ -80,7 +82,19 @@ class App extends React.Component{
     this.setState({
       accessToken
     })
-
+    await axios.get('http://45.119.213.117:5000/api/v1/exchange',{
+      headers:{
+        'Authorization': `Bearer ${this.state.accessToken}`,
+      }
+    }).then(res=>{
+      console.log(res.data)
+      this.setState({
+        apiStockResult: res.data.data.items
+      })
+    }).catch(err=>{
+      // console.log(this.state.accessToken)
+      console.log(err)
+    })
     this.socket = io('http://45.119.213.117:5000');
     this.socket.on('connect', res => {
       console.log("Socket connected");
@@ -89,15 +103,14 @@ class App extends React.Component{
       })
     })
     this.socket.on('derivative', res => {
-      // console.log(res.items)
       // console.log("Getting stock data...");
       this.setState({
         apiStockResult: res.items
       })
     })
     this.socket.on('derivativeChart', res=>{
+      console.log('Getting chart data...');
       console.log(res)
-      // console.log('Getting chart data...');
       let dataSeries=res.data.map((value)=>{
         return Object.keys(value).map((key)=>{
           if(key==='createdAt'){
@@ -108,7 +121,9 @@ class App extends React.Component{
       })
       // console.log(dataSeries)
       let plotLine=res.firstIndex;
+      console.log(res.firstIndex)
       this.setState({
+        index: res.firstIndex,
         chartOptions:{
           series:[{
             data: dataSeries,
@@ -119,7 +134,7 @@ class App extends React.Component{
           yAxis:{
             plotLines:[{
               color: 'orange',
-              width: 3,
+              width: 1,
               value: plotLine
             }]
           }
@@ -131,10 +146,15 @@ class App extends React.Component{
     return(
       <div id="main">
         <div className='logoNchart'>
-          <div className='item1'>
+        <div className='item1'>
+            <p className='test'>{this.state.index}</p>
+          </div>
+          <div className='item2'>
             <HighchartsReact options={this.state.chartOptions}/>
           </div>
-          <img className='item2' src={icon} alt='ICON' height='100%'/>
+          <div className='item3'>
+            <img className='logo' src={icon} alt='ICON'/>
+          </div>
         </div>
         <div className="container" id="table">
           <table className='banggia'>

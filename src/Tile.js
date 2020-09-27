@@ -12,6 +12,13 @@ orangeStyle = {
 
 export class MaCP extends React.Component {
     render() {
+        // console.log(this.props)
+        if(''===this.props.giaKhopLenh){
+        // console.log(this.props.value)    
+        return(
+                <td>{this.props.value}</td>
+            )
+        }
         return (
             <td style={this.props.giaKhopLenh===this.props.giaTC?{color:'yellow'}:this.props.giaKhopLenh>this.props.giaTC?{color:'green'}:{color:'red'}}>{this.props.value}</td>
         )
@@ -47,16 +54,14 @@ export class TongCP extends React.Component {
        if(this.state.value!==prevState){
            setTimeout(()=>{
                this.setState({
-                   tileStyle:{
-                       color: 'orange'
-                   }
+                   tileStyle:{}
                })
            }, 1000)
        }
    }
     render() {
         return (
-            <td style={this.state.tileStyle}>{this.state.value}</td>
+            <td style={this.state.tileStyle}>{this.state.value===0?'':this.state.value}</td>
         )
     }
 }
@@ -109,7 +114,7 @@ export default class MuaBan extends React.Component{
     render(){
         // console.log('Calling render');
         return (
-            <td style={this.state.tileStyle}>{this.state.gia}</td>
+            <td style={this.state.tileStyle}>{this.state.gia===0?'':this.state.gia}</td>
         )
     }
 }
@@ -194,7 +199,7 @@ export class KhopLenh extends React.Component{
         })
     }
     static getDerivedStateFromProps(nextProps, currentState){
-        let textColor=nextProps.gia===nextProps.giaTC?{color:'yellow'}:nextProps.gia>nextProps.giaTC?{color:'green'}:{color:'red'};
+        // let textColor=nextProps.gia===nextProps.giaTC?{color:'yellow'}:nextProps.gia>nextProps.giaTC?{color:'green'}:{color:'red'};
         if(nextProps.value!==currentState.value){
             return{
                 value: nextProps.value,
@@ -203,13 +208,13 @@ export class KhopLenh extends React.Component{
                 tileStyle: orangeStyle
             }
         }
-        // else if(nextProps.value===currentState.value&&nextProps.giaKhopLenh!==currentState.giaKhopLenh){
-        //     return{
-        //         giaTC: nextProps.giaTC,
-        //         giaKhopLenh: nextProps.giaKhopLenh,
-        //         tileStyle: textColor
-        //     }
-        // }
+        else if(nextProps.value===currentState.value&&nextProps.giaKhopLenh!==currentState.giaKhopLenh){
+            return{
+                giaTC: nextProps.giaTC,
+                giaKhopLenh: nextProps.giaKhopLenh,
+                tileStyle: orangeStyle
+            }
+        }
         else return null
     }
     componentDidUpdate(prevProps, prevState){
@@ -221,10 +226,17 @@ export class KhopLenh extends React.Component{
             })
           },1000)
         }
+        if(this.state.giaKhopLenh!==prevState.giaKhopLenh){
+            setTimeout(()=>{
+                this.setState({
+                  tileStyle:textColor
+                })
+              },1000)
+        }
       }
     render() {
         return (
-            <td style={this.state.tileStyle} className='khoplenh'>{this.state.value}</td>
+            <td style={this.state.tileStyle} className='khoplenh'>{this.state.value===0?'':this.state.value}</td>
         )
     }
 }

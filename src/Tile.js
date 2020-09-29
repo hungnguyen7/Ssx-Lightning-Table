@@ -236,7 +236,7 @@ export class KhopLenh extends React.Component{
       }
     render() {
         return (
-            <td style={this.state.tileStyle} className='khoplenh'>{this.state.value===0?'':this.state.value}</td>
+            <td style={this.state.tileStyle} className='khoplenh'>{this.state.value===0||this.state.value===-100?'':this.state.value}</td>
         )
     }
 }

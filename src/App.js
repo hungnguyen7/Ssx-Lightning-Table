@@ -5,10 +5,6 @@ import Row from './Row';
 import io from 'socket.io-client';
 import axios from 'axios';
 import HighchartsReact from "highcharts-react-official";
-
-// let dateTime = new Date();
-let min = new Date(2020, 27, 8, 13, 50).getTime();
-let max = new Date(2020, 27, 8, 15, 0).getTime();
 class App extends React.Component{
   constructor(props){
     super(props);
@@ -48,8 +44,6 @@ class App extends React.Component{
             }
         },
           type: 'datetime',
-          min: min,
-          max: max
         },
         yAxis:{
           title:{
@@ -82,19 +76,7 @@ class App extends React.Component{
     this.setState({
       accessToken
     })
-    await axios.get('http://45.119.213.117:5000/api/v1/exchange',{
-      headers:{
-        'Authorization': `Bearer ${this.state.accessToken}`,
-      }
-    }).then(res=>{
-      console.log(res.data)
-      this.setState({
-        apiStockResult: res.data.data.items
-      })
-    }).catch(err=>{
-      // console.log(this.state.accessToken)
-      console.log(err)
-    })
+    // console.log(accessToken)
     this.socket = io('http://45.119.213.117:5000');
     this.socket.on('connect', res => {
       console.log("Socket connected");
@@ -119,11 +101,12 @@ class App extends React.Component{
           return value[key]
         })
       })
+      console.log(dataSeries)
       // console.log(dataSeries)
       let plotLine=res.firstIndex;
       console.log(res.firstIndex)
       this.setState({
-        index: res.firstIndex,
+        index: (res.firstIndex).toFixed(2),
         chartOptions:{
           series:[{
             data: dataSeries,
@@ -137,6 +120,10 @@ class App extends React.Component{
               width: 1,
               value: plotLine
             }]
+          },
+          xAxis: {
+            min: new Date(res.openTime).getTime(),
+            max: new Date(res.closeTime).getTime()
           }
         }
       })

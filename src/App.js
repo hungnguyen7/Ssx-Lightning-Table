@@ -104,9 +104,9 @@ class App extends React.Component{
       console.log(dataSeries)
       // console.log(dataSeries)
       let plotLine=res.firstIndex;
-      console.log(res.firstIndex)
+      console.log((dataSeries[dataSeries.length-1][1]).toFixed(2))
       this.setState({
-        index: (res.firstIndex).toFixed(2),
+        index: (dataSeries[dataSeries.length-1][1]).toFixed(2),
         chartOptions:{
           series:[{
             data: dataSeries,

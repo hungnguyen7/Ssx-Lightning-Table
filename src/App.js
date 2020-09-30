@@ -86,9 +86,12 @@ class App extends React.Component{
     })
     this.socket.on('derivative', res => {
       // console.log("Getting stock data...");
-      this.setState({
-        apiStockResult: res.items
-      })
+      console.log(res)
+      if(res!==null){
+        this.setState({
+          apiStockResult: res.items
+        })
+      }
     })
     this.socket.on('derivativeChart', res=>{
       console.log('Getting chart data...');

@@ -100,17 +100,24 @@ class App extends React.Component{
     this.socket.on('derivativeChart', res=>{
       console.log('Getting chart data...');
       console.log(res)
-      let dataSeries=res.data.map((value)=>{
-        return Object.keys(value).map((key)=>{
-          if(key==='createdAt'){
-            return new Date(value[key]).getTime()
-          }
-          return value[key]
+      let dataSeries;
+      try{
+        dataSeries=res.data.map((value)=>{
+          return Object.keys(value).map((key)=>{
+            if(key==='createdAt'){
+              return new Date(value[key]).getTime()
+            }
+            return value[key]
+          })
         })
-      })
+      }
+      catch(error){
+        console.log(error)
+      }
       console.log(dataSeries)
       // console.log(dataSeries)
       let plotLine=res.firstIndex;
+      console.log(plotLine)
       // console.log((dataSeries[dataSeries.length-1][1]).toFixed(2))
       try{
         this.setState({

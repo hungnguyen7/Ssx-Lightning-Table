@@ -87,11 +87,15 @@ class App extends React.Component{
     this.socket.on('derivative', res => {
       // console.log("Getting stock data...");
       console.log(res)
-      if(res!==null){
+      try{
         this.setState({
           apiStockResult: res.items
         })
       }
+      catch(error){
+        console.log(error.message)
+      }
+  
     })
     this.socket.on('derivativeChart', res=>{
       console.log('Getting chart data...');
@@ -108,11 +112,16 @@ class App extends React.Component{
       // console.log(dataSeries)
       let plotLine=res.firstIndex;
       // console.log((dataSeries[dataSeries.length-1][1]).toFixed(2))
-      if(dataSeries[dataSeries.length-1][1]!==null){
+      try{
         this.setState({
           index: (dataSeries[dataSeries.length-1][1]).toFixed(2)
         })
       }
+      catch(error){
+        console.log(error.message)
+      }
+        
+      
       this.setState({
         chartOptions:{
           series:[{

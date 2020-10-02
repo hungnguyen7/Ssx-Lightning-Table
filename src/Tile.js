@@ -1,5 +1,5 @@
 import React from 'react';
-
+import CurrencyFormat from 'react-currency-format';
 const greenStyle = {
     backgroundColor: '#2EB101'
 },
@@ -177,7 +177,9 @@ export class KhoiLuong extends React.Component{
     }
     render() {
         return (
-            <td style={this.state.tileStyle}>{this.state.kl}</td>
+            // <td style={this.state.tileStyle}>{this.state.kl}</td>
+            <td style={this.state.tileStyle}><CurrencyFormat value={this.state.kl} displayType={'text'} thousandSeparator={true}/></td>
+
         )
     }
 }

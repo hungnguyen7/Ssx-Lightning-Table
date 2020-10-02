@@ -8,9 +8,11 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.20.0",
+    "currency": "^4.1.0",
     "highcharts": "^8.2.0",
     "highcharts-react-official": "^3.0.0",
     "react": "^16.13.1",
+    "react-currency-format": "^1.0.0",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.3",
     "socket.io-client": "^2.3.0"

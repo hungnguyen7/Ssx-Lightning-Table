@@ -1,5 +1,4 @@
 {
-  "homepage": "https://hungnguyen7.github.io/ssx-table",
   "name": "ssx-table",
   "version": "0.1.0",
   "private": true,
@@ -18,8 +17,6 @@
     "socket.io-client": "^2.3.0"
   },
   "scripts": {
-    "predeploy": "yarn run build",
-    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

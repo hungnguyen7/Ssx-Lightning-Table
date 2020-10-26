@@ -12,15 +12,14 @@ orangeStyle = {
 
 export class MaCP extends React.Component {
     render() {
-        // console.log(this.props)
-        if(''===this.props.giaKhopLenh){
-        // console.log(this.props.value)    
+        // Trường hợp chưa có khớp lệnh nên mã CP sẽ không có màu
+        if(''===this.props.matchedCommandPrice){
         return(
                 <td>{this.props.value}</td>
             )
         }
         return (
-            <td style={this.props.giaKhopLenh===this.props.giaTC?{color:'yellow'}:this.props.giaKhopLenh>this.props.giaTC?{color:'green'}:{color:'red'}}>{this.props.value}</td>
+            <td style={this.props.matchedCommandPrice===this.props.referencePrice?{color:'yellow'}:this.props.matchedCommandPrice>this.props.referencePrice?{color:'green'}:{color:'red'}}>{this.props.value}</td>
         )
     }
 }
@@ -33,6 +32,8 @@ export class GiaTC extends React.Component {
     }
 }
 
+// Ý tưởng: sử dụng getDerivedStateFromProps tạo hiệu ứng thay đổi màu ô khi giá trị trong ô thay đổi, sử dụng componentDidUpdate để xóa hiệu ứng,
+// tránh trường hợp ô bị dính 1 màu khi dữ liệu không thay đổi
 export class TongCP extends React.Component {
     constructor(props) {
         super(props);
@@ -41,6 +42,7 @@ export class TongCP extends React.Component {
             tileStyle: {}
         }
     }
+    // Ô đổi sang màu cam khi giá trị trong ô thay đổi
     static getDerivedStateFromProps(nextProps, currentState){
         if(nextProps.value !== currentState.value){
             return{
@@ -50,6 +52,7 @@ export class TongCP extends React.Component {
         }
         else return null;
     }
+    //Xóa hiệu ứng đổi màu của ô trong 1s, tránh trường hợp ô luôn có màu cam
     componentDidUpdate(prevProps, prevState){
        if(this.state.value!==prevState){
            setTimeout(()=>{
@@ -69,31 +72,31 @@ export default class MuaBan extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            gia: this.props.gia,
-            giaTC: this.props.giaTC,
+            price: this.props.price,
+            referencePrice: this.props.referencePrice,
             tileStyle:{}
         }
     }
     componentDidMount(){
         // console.log("Calling componentDidMount");
-        let textColor = this.state.gia===this.state.giaTC?{color:'yellow'}:this.state.gia>this.state.giaTC?{color:'green'}:{color:'red'};
+        let textColor = this.state.price===this.state.referencePrice?{color:'yellow'}:this.state.price>this.state.referencePrice?{color:'green'}:{color:'red'};
         this.setState({
             tileStyle: textColor
         })
     }
     static getDerivedStateFromProps(nextProps, currentState){
         // console.log("Calling getDerivedStateFromProps")
-        if(nextProps.gia > currentState.gia){
+        if(nextProps.price > currentState.price){
             return{
-                gia: nextProps.gia,
-                giaTC: nextProps.giaTC,
+                price: nextProps.price,
+                referencePrice: nextProps.referencePrice,
                 tileStyle: greenStyle
             }
         }
-        else if(nextProps.gia < currentState.gia){
+        else if(nextProps.price < currentState.price){
             return{
-                gia: nextProps.gia,
-                giaTC: nextProps.giaTC,
+                price: nextProps.price,
+                referencePrice: nextProps.referencePrice,
                 tileStyle: redStyle
             }
         }
@@ -101,9 +104,8 @@ export default class MuaBan extends React.Component{
         
     }
     componentDidUpdate(prevProps, prevState){
-        if(this.state.gia!==prevState.gia){
-            let textColor = this.state.gia===this.state.giaTC?{color:'yellow'}:this.state.gia>this.state.giaTC?{color:'green'}:{color:'red'};
-            //Xu li backgroundTile
+        if(this.state.price!==prevState.price){
+            let textColor = this.state.price===this.state.referencePrice?{color:'yellow'}:this.state.price>this.state.referencePrice?{color:'green'}:{color:'red'};
             setTimeout(()=>{
                 this.setState({
                     tileStyle: textColor
@@ -114,7 +116,7 @@ export default class MuaBan extends React.Component{
     render(){
         // console.log('Calling render');
         return (
-            <td style={this.state.tileStyle}>{this.state.gia===0?'':this.state.gia}</td>
+            <td style={this.state.tileStyle}>{this.state.price===0?'':this.state.price}</td>
         )
     }
 }
@@ -122,42 +124,41 @@ export class KhoiLuong extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            giaTC: this.props.giaTC,
-            gia: this.props.gia,
-            kl: this.props.kl,
+            referencePrice: this.props.referencePrice,
+            price: this.props.price,
+            volume: this.props.volume,
             tileStyle:{}
         }
     }
     componentDidMount(){
-        let textColor = this.props.gia===this.props.giaTC?{color: 'yellow'}:this.props.gia>this.props.giaTC?{color: 'green'}:{color: 'red'};
+        let textColor = this.props.price===this.props.referencePrice?{color: 'yellow'}:this.props.price>this.props.referencePrice?{color: 'green'}:{color: 'red'};
         this.setState({
             tileStyle: textColor
         })
     }
     static getDerivedStateFromProps(nextProps, currentState){
-        // console.log("Calling getDerivedStateFromProps")
-        let textColor=nextProps.gia===nextProps.giaTC?{color:'yellow'}:nextProps.gia>nextProps.giaTC?{color:'green'}:{color:'red'};
-        if(nextProps.kl > currentState.kl){
+        let textColor=nextProps.price===nextProps.referencePrice?{color:'yellow'}:nextProps.price>nextProps.referencePrice?{color:'green'}:{color:'red'};
+        if(nextProps.volume > currentState.volume){
             return{
-                giaTC: nextProps.giaTC,
-                gia: nextProps.gia,
-                kl: nextProps.kl,
+                referencePrice: nextProps.referencePrice,
+                price: nextProps.price,
+                volume: nextProps.volume,
                 tileStyle: greenStyle
             }
         }
-        else if(nextProps.kl < currentState.kl){
+        else if(nextProps.volume < currentState.volume){
             return{
-                giaTC: nextProps.giaTC,
-                gia: nextProps.gia,
-                kl: nextProps.kl,
+                referencePrice: nextProps.referencePrice,
+                price: nextProps.price,
+                volume: nextProps.volume,
                 tileStyle: redStyle
             }
         }
-        // Xu li truong hop gia thay doi nhung khoi luong giu nguyen
-        else if(nextProps.kl === currentState.kl&&nextProps.gia!==currentState.gia){
+        // Xử lí trường hợp price thay đổi nhưng volume không thay đổi
+        else if(nextProps.volume === currentState.volume&&nextProps.price!==currentState.price){
             return{
-                giaTC: nextProps.giaTC,
-                gia: nextProps.gia,
+                referencePrice: nextProps.referencePrice,
+                price: nextProps.price,
                 tileStyle: textColor
             }
         }
@@ -166,8 +167,8 @@ export class KhoiLuong extends React.Component{
     }
     componentDidUpdate(prevProps, prevState){
         // Xu li backgroundColor cua tile
-        if(this.state.kl!==prevState.kl){
-            let textColor = this.state.gia===this.state.giaTC?{color:'yellow'}:this.state.gia>this.state.giaTC?{color:'green'}:{color:'red'};
+        if(this.state.volume!==prevState.volume){
+            let textColor = this.state.price===this.state.referencePrice?{color:'yellow'}:this.state.price>this.state.referencePrice?{color:'green'}:{color:'red'};
             setTimeout(()=>{
                 this.setState({
                     tileStyle: textColor
@@ -177,8 +178,7 @@ export class KhoiLuong extends React.Component{
     }
     render() {
         return (
-            // <td style={this.state.tileStyle}>{this.state.kl}</td>
-            <td style={this.state.tileStyle}><CurrencyFormat value={this.state.kl} displayType={'text'} thousandSeparator={true}/></td>
+            <td style={this.state.tileStyle}><CurrencyFormat value={this.state.volume} displayType={'text'} thousandSeparator={true}/></td>
 
         )
     }
@@ -189,38 +189,37 @@ export class KhopLenh extends React.Component{
         super(props);
         this.state={
             value: this.props.value,
-            giaTC: this.props.giaTC,
-            giaKhopLenh: this.props.giaKhopLenh,
+            referencePrice: this.props.referencePrice,
+            matchedCommandPrice: this.props.matchedCommandPrice,
             tileStyle:{}
         }
     }
     componentDidMount(){
-        let textColor = this.state.giaKhopLenh===this.state.giaTC?{color:'yellow'}:this.state.giaKhopLenh>this.state.giaTC?{color: 'green'}: {color:'red'};
+        let textColor = this.state.matchedCommandPrice===this.state.referencePrice?{color:'yellow'}:this.state.matchedCommandPrice>this.state.referencePrice?{color: 'green'}: {color:'red'};
         this.setState({
             tileStyle: textColor
         })
     }
     static getDerivedStateFromProps(nextProps, currentState){
-        // let textColor=nextProps.gia===nextProps.giaTC?{color:'yellow'}:nextProps.gia>nextProps.giaTC?{color:'green'}:{color:'red'};
         if(nextProps.value!==currentState.value){
             return{
                 value: nextProps.value,
-                giaTC: nextProps.giaTC,
-                giaKhopLenh: nextProps.giaKhopLenh,
+                referencePrice: nextProps.referencePrice,
+                matchedCommandPrice: nextProps.matchedCommandPrice,
                 tileStyle: orangeStyle
             }
         }
-        else if(nextProps.value===currentState.value&&nextProps.giaKhopLenh!==currentState.giaKhopLenh){
+        else if(nextProps.value===currentState.value&&nextProps.matchedCommandPrice!==currentState.matchedCommandPrice){
             return{
-                giaTC: nextProps.giaTC,
-                giaKhopLenh: nextProps.giaKhopLenh,
+                referencePrice: nextProps.referencePrice,
+                matchedCommandPrice: nextProps.matchedCommandPrice,
                 tileStyle: orangeStyle
             }
         }
         else return null
     }
     componentDidUpdate(prevProps, prevState){
-        let textColor = this.state.giaKhopLenh===this.state.giaTC?{color:'yellow'}:this.state.giaKhopLenh>this.state.giaTC?{color: 'green'}: {color:'red'};
+        let textColor = this.state.matchedCommandPrice===this.state.referencePrice?{color:'yellow'}:this.state.matchedCommandPrice>this.state.referencePrice?{color: 'green'}: {color:'red'};
         if(this.state.value!==prevState.value){
           setTimeout(()=>{
             this.setState({
@@ -228,7 +227,7 @@ export class KhopLenh extends React.Component{
             })
           },1000)
         }
-        if(this.state.giaKhopLenh!==prevState.giaKhopLenh){
+        if(this.state.matchedCommandPrice!==prevState.matchedCommandPrice){
             setTimeout(()=>{
                 this.setState({
                   tileStyle:textColor

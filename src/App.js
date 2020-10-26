@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import icon from './icon.png';
 import Row from './Row';
+import Index from './IndexValue';
 import io from 'socket.io-client';
 import axios from 'axios';
 import HighchartsReact from "highcharts-react-official";
@@ -11,7 +12,7 @@ class App extends React.Component{
     this.state={
       index:null,
       accessToken: '',
-      apiStockResult:[],
+      dataTable:[],
       chartOptions:{
         title:{
           text: null
@@ -65,9 +66,9 @@ class App extends React.Component{
   }
   async componentDidMount(){
     //Get access token
-    let accessToken = await axios.post('http://45.119.213.117:5000/api/v1/users/login', {
-      username: 'admin02',
-      password: '123456'
+    let accessToken = await axios.post('//45.119.213.117:5000/api/v1/users/login', {
+      username: 'dltruongc',
+      password: 'dltruongc'
     }).then((res)=>{
       return res.data.accessToken.value
     }).catch((err)=>{
@@ -76,34 +77,35 @@ class App extends React.Component{
     this.setState({
       accessToken
     })
-    // console.log(accessToken)
-    this.socket = io('http://45.119.213.117:5000');
+    //Connect socket
+    this.socket = io('//45.119.213.117:5000');
     this.socket.on('connect', res => {
       console.log("Socket connected");
       this.socket.emit('authenticate', {
         token: `Bearer ${this.state.accessToken}`
       })
     })
+    // Get data bảng điện
     this.socket.on('derivative', res => {
-      // console.log("Getting stock data...");
-      console.log(res)
+      // console.log(res)
       try{
         this.setState({
-          apiStockResult: res.items
+          dataTable: res.items
         })
       }
       catch(error){
         console.log(error.message)
       }
-  
     })
+    // Get data chart 
     this.socket.on('derivativeChart', res=>{
       console.log('Getting chart data...');
-      console.log(res)
+      // console.log(res)
       let dataSeries;
       try{
         dataSeries=res.data.map((value)=>{
           return Object.keys(value).map((key)=>{
+            // Covert property createdAt sang getTime()
             if(key==='createdAt'){
               return new Date(value[key]).getTime()
             }
@@ -114,11 +116,7 @@ class App extends React.Component{
       catch(error){
         console.log(error)
       }
-      console.log(dataSeries)
-      // console.log(dataSeries)
       let plotLine=res.firstIndex;
-      console.log(plotLine)
-      // console.log((dataSeries[dataSeries.length-1][1]).toFixed(2))
       try{
         this.setState({
           index: (dataSeries[dataSeries.length-1][1]).toFixed(2)
@@ -145,6 +143,7 @@ class App extends React.Component{
             }]
           },
           xAxis: {
+            // Set min max cho chart
             min: new Date(res.openTime).getTime(),
             max: new Date(res.closeTime).getTime()
           }
@@ -157,7 +156,7 @@ class App extends React.Component{
       <div id="main">
         <div className='logoNchart'>
         <div className='item1'>
-            <p className='test'>{this.state.index}</p>
+            <Index value={this.state.index}/>
           </div>
           <div className='item2'>
             <HighchartsReact options={this.state.chartOptions}/>
@@ -197,7 +196,7 @@ class App extends React.Component{
             </thead>
             <tbody>
               {
-                this.state.apiStockResult.map((value, index)=>{
+                this.state.dataTable.map((value, index)=>{
                   return(
                       <Row key={`row-${index}`} value={value}/>
                   )
